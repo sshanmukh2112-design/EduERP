@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AccountSettings } from '../../components/AccountSettings';
 import { DashboardLayout } from '../../components/DashboardLayout';
 
 export const AdministratorProfile = () => {
@@ -91,6 +92,7 @@ export const AdministratorProfile = () => {
                   </button>
                 </div>
               )}
+              <AccountSettings />
             </div>
           </div>
         </div>

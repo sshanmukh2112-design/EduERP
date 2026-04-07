@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AccountSettings } from '../../components/AccountSettings';
 import { DashboardLayout } from '../../components/DashboardLayout';
 
 export const TeacherProfile = () => {
@@ -93,6 +94,7 @@ export const TeacherProfile = () => {
                   </button>
                 </div>
               )}
+              <AccountSettings />
             </div>
           </div>
         </div>

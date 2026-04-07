@@ -3,11 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Menu, LogOut } from 'lucide-react';
 import { NotificationBell } from './NotificationBell';
+import { Modal } from './Modal';
 
 export const Topbar = ({ onMenuClick }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const getBreadcrumb = () => {
     const path = location.pathname;
@@ -22,6 +24,7 @@ export const Topbar = ({ onMenuClick }) => {
   const handleLogout = () => {
     logout();
     navigate('/');
+    setShowLogoutModal(false);
   };
 
   return (
@@ -45,12 +48,36 @@ export const Topbar = ({ onMenuClick }) => {
           {user?.name?.split(' ').map((n) => n[0]).join('') || 'U'}
         </div>
         <button
-          onClick={handleLogout}
+          onClick={() => setShowLogoutModal(true)}
           className="text-[#3E2C23] hover:text-[#A67B5B] transition-colors"
         >
           <LogOut size={18} />
         </button>
       </div>
+
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="Confirm Logout"
+        footerActions={
+          <>
+            <button
+              onClick={() => setShowLogoutModal(false)}
+              className="px-4 py-2 border border-[#D2B48C]/40 text-[#3E2C23] hover:border-[#A67B5B] transition-colors font-mono text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-[#3E2C23] text-white hover:bg-[#6F4E37] transition-colors font-mono text-sm"
+            >
+              Logout
+            </button>
+          </>
+        }
+      >
+        <p className="text-[#3E2C23] font-mono text-sm">Are you sure you want to log out of your academic space?</p>
+      </Modal>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AccountSettings } from '../../components/AccountSettings';
 import { DashboardLayout } from '../../components/DashboardLayout';
 import { Modal } from '../../components/Modal';
 
@@ -92,6 +93,7 @@ export const StudentProfile = () => {
                   </button>
                 </div>
               )}
+              <AccountSettings />
             </div>
           </div>
         </div>

@@ -5,11 +5,13 @@ import {
   LogOut, LayoutDashboard, Bell, Files, BarChart3, Users, Calendar, MessageSquare,
   User, Settings, Lock, Zap, DollarSign, BookOpen, Menu, X
 } from 'lucide-react';
+import { Modal } from './Modal';
 
 export const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { role, logout } = useAuth();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const getNavItems = () => {
     const baseItems = [
@@ -64,6 +66,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
     logout();
     navigate('/');
     onClose();
+    setShowLogoutModal(false);
   };
 
   const isActive = (path) => location.pathname === path;
@@ -72,9 +75,8 @@ export const Sidebar = ({ isOpen, onClose }) => {
     <>
       {isOpen && <div className="fixed inset-0 bg-[#3E2C23]/50 z-30 md:hidden" onClick={onClose} />}
       <aside
-        className={`fixed left-0 top-0 bottom-0 w-56 bg-[#EDE3D2]/80 backdrop-blur-md rounded-sm border-r border-[#D2B48C]/40 z-40 transform transition-transform ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 md:relative flex flex-col overflow-y-auto`}
+        className={`fixed left-0 top-0 bottom-0 w-56 bg-[#EDE3D2]/80 backdrop-blur-md rounded-sm border-r border-[#D2B48C]/40 z-40 transform transition-transform ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          } md:translate-x-0 md:relative flex flex-col overflow-y-auto`}
       >
         <div className="p-6 border-b border-[#D2B48C]/40 flex items-center justify-between md:justify-start">
           <div className="font-mono text-sm font-bold text-[#3E2C23] tracking-widest">EDUERP</div>
@@ -91,11 +93,10 @@ export const Sidebar = ({ isOpen, onClose }) => {
                 navigate(item.path);
                 onClose();
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2 transition-all border-l-4 ${
-                isActive(item.path)
-                  ? 'border-l-[#A67B5B] text-[#A67B5B] bg-[#E6D8C3]'
-                  : 'border-l-transparent text-[#3E2C23] hover:text-[#A67B5B] hover:border-l-[#A67B5B]'
-              }`}
+              className={`w-full flex items-center gap-3 px-3 py-2 transition-all border-l-4 ${isActive(item.path)
+                ? 'border-l-[#A67B5B] text-[#A67B5B] bg-[#E6D8C3]'
+                : 'border-l-transparent text-[#3E2C23] hover:text-[#A67B5B] hover:border-l-[#A67B5B]'
+                }`}
             >
               <item.icon size={18} />
               <span className="font-mono text-xs tracking-widest uppercase">{item.label}</span>
@@ -105,7 +106,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
 
         <div className="border-t border-[#D2B48C]/40 p-3">
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="w-full flex items-center gap-3 px-3 py-2 text-[#3E2C23] hover:text-[#A67B5B] transition-colors border border-transparent hover:border-[#A67B5B]"
           >
             <LogOut size={18} />
@@ -113,6 +114,30 @@ export const Sidebar = ({ isOpen, onClose }) => {
           </button>
         </div>
       </aside>
+
+      <Modal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        title="Confirm Logout"
+        footerActions={
+          <>
+            <button
+              onClick={() => setShowLogoutModal(false)}
+              className="px-4 py-2 border border-[#D2B48C]/40 text-[#3E2C23] hover:border-[#A67B5B] transition-colors font-mono text-sm"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 bg-[#3E2C23] text-white hover:bg-[#6F4E37] transition-colors font-mono text-sm"
+            >
+              Logout
+            </button>
+          </>
+        }
+      >
+        <p className="text-[#3E2C23] font-mono text-sm">Are you sure you want to log out of your academic space?</p>
+      </Modal>
     </>
   );
 };

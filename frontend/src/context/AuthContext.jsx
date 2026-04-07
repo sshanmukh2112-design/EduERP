@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok && data.user) {
         if (data.user.role.toLowerCase() === selectedRole.toLowerCase()) {
-          const userData = { email: data.user.email, name: data.user.name, role: selectedRole };
+          const userData = { id: data.user.id, email: data.user.email, name: data.user.name, role: selectedRole };
           const backendToken = 'mock-token-' + Date.now(); // Replace when JWT is implemented in backend
 
           setUser(userData);
@@ -90,10 +90,40 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('eduerp_token');
   };
 
+  const deleteAccount = async (id) => {
+    try {
+      const res = await fetch(`/api/users/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        logout();
+        return { success: true };
+      }
+      return { success: false, message: 'Could not delete your account.' };
+    } catch (err) {
+      return { success: false, message: 'Network breakdown attempting delete.' };
+    }
+  };
+
+  const updatePassword = async (id, oldPassword, newPassword) => {
+    try {
+      const res = await fetch(`/api/users/${id}/password`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ oldPassword, newPassword })
+      });
+
+      if (res.ok) return { success: true };
+
+      const errorText = await res.text();
+      return { success: false, message: errorText || 'Could not update your password.' };
+    } catch (err) {
+      return { success: false, message: 'Network breakdown attempting update.' };
+    }
+  };
+
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ user, role, token, isAuthenticated, loading, login, logout, register }}>
+    <AuthContext.Provider value={{ user, role, token, isAuthenticated, loading, login, logout, register, deleteAccount, updatePassword }}>
       {children}
     </AuthContext.Provider>
   );
